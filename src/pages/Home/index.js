@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Container, Block, Label, Value, PresentationBox } from "./styles";
 
+import alarm from "../../assets/audio/alarm.mp3";
+
 export default class Home extends Component {
   state = {
     data: {
@@ -31,16 +33,35 @@ export default class Home extends Component {
       }
     };
 
-    axios
-      .get(
-        `https://bff-sales-api-cdn.ingressorapido.com.br/api/v1/events/30610`,
-        config
-      )
-      .then(res => {
-        const { data } = res;
-        this.setState(data);
-      });
+    setTimeout(
+      function() {
+        axios
+          .get(
+            `https://bff-sales-api-cdn.ingressorapido.com.br/api/v1/events/30610`,
+            // `http://localhost:8000/index.php`,
+            config
+          )
+          .then(res => {
+            const { data } = res;
+            this.setState(data);
+
+            // console.log(data);
+
+            data.data.presentations.items.map(item => {
+              if (item.total_available > 0) {
+                this.playAlarm();
+              }
+            });
+          });
+      }.bind(this),
+      3000
+    );
   }
+
+  playAlarm = () => {
+    let audio = new Audio(alarm);
+    audio.play();
+  };
 
   formatDate(date) {
     const dateObj = new Date(date);
@@ -66,8 +87,8 @@ export default class Home extends Component {
       <Container>
         Searching for available tickets...
         <Block>
-          {this.state.data.presentations.items.map(item => (
-            <PresentationBox>
+          {this.state.data.presentations.items.map((item, index) => (
+            <PresentationBox key={index}>
               <Label>
                 tickets on {this.formatDate(item.presentation_local_date_time)}{" "}
                 ->
