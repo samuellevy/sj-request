@@ -25,6 +25,17 @@ export default class Home extends Component {
   };
 
   componentDidMount() {
+    this.getData();
+
+    setInterval(
+      function() {
+        this.getData();
+      }.bind(this),
+      60000
+    );
+  }
+
+  getData = () => {
     let config = {
       headers: {
         Accept: "application/json",
@@ -33,40 +44,35 @@ export default class Home extends Component {
       }
     };
 
-    setInterval(
-      function() {
-        axios
-          .get(
-            `https://bff-sales-api-cdn.ingressorapido.com.br/api/v1/events/30610`,
-            // `http://192.168.0.14:8000/index.php`,
-            config
-          )
-          .then(res => {
-            console.log("busca");
-            const { data } = res;
-            this.setState(data);
+    axios
+      .get(
+        `https://bff-sales-api-cdn.ingressorapido.com.br/api/v1/events/30610`,
+        // `http://192.168.0.14:8000/index.php`,
+        config
+      )
+      .then(res => {
+        console.log("busca");
+        const { data } = res;
+        this.setState(data);
 
-            // console.log(data);
+        // console.log(data);
 
-            // data.data.presentations.items.map(item => {
-            //   if (item.total_available > 0) {
-            //     this.playAlarm();
-            //   }
-            // });
+        // data.data.presentations.items.map(item => {
+        //   if (item.total_available > 0) {
+        //     this.playAlarm();
+        //   }
+        // });
 
-            let items = data.data.presentations.items;
+        let items = data.data.presentations.items;
 
-            for (let item of items) {
-              if (item.total_available > 0) {
-                this.playAlarm();
-                break;
-              }
-            }
-          });
-      }.bind(this),
-      60000
-    );
-  }
+        for (let item of items) {
+          if (item.total_available > 0) {
+            this.playAlarm();
+            break;
+          }
+        }
+      });
+  };
 
   playAlarm = () => {
     let audio = new Audio(alarm);
