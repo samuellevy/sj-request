@@ -33,28 +33,38 @@ export default class Home extends Component {
       }
     };
 
-    setTimeout(
+    setInterval(
       function() {
         axios
           .get(
             `https://bff-sales-api-cdn.ingressorapido.com.br/api/v1/events/30610`,
-            // `http://localhost:8000/index.php`,
+            // `http://192.168.0.14:8000/index.php`,
             config
           )
           .then(res => {
+            console.log("busca");
             const { data } = res;
             this.setState(data);
 
             // console.log(data);
 
-            data.data.presentations.items.map(item => {
+            // data.data.presentations.items.map(item => {
+            //   if (item.total_available > 0) {
+            //     this.playAlarm();
+            //   }
+            // });
+
+            let items = data.data.presentations.items;
+
+            for (let item of items) {
               if (item.total_available > 0) {
                 this.playAlarm();
+                break;
               }
-            });
+            }
           });
       }.bind(this),
-      3000
+      60000
     );
   }
 
