@@ -31,7 +31,7 @@ export default class Home extends Component {
       function() {
         this.getData();
       }.bind(this),
-      60000
+      2000
     );
   }
 
@@ -47,12 +47,12 @@ export default class Home extends Component {
     axios
       .get(
         `https://bff-sales-api-cdn.ingressorapido.com.br/api/v1/events/30610`,
-        // `http://192.168.0.14:8000/index.php`,
+        // `http://192.168.2.49:8001/index.php`,
         config
       )
       .then(res => {
-        console.log("busca");
         const { data } = res;
+        console.log(data);
         this.setState(data);
 
         // console.log(data);
@@ -87,9 +87,7 @@ export default class Home extends Component {
     const hour = dateObj.getHours();
     const minute = dateObj.getMinutes();
 
-    date = `${this.formatDigits(day)}/${this.formatDigits(
-      month
-    )}/${year} (${this.formatDigits(hour)}h${this.formatDigits(minute)})`;
+    date = `${this.formatDigits(day)}/${this.formatDigits(month)}/${year} (${this.formatDigits(hour)}h${this.formatDigits(minute)})`;
     return date;
   }
 
@@ -105,13 +103,8 @@ export default class Home extends Component {
         <Block>
           {this.state.data.presentations.items.map((item, index) => (
             <PresentationBox key={index}>
-              <Label>
-                tickets on {this.formatDate(item.presentation_local_date_time)}{" "}
-                ->
-              </Label>
-              <Value available={item.total_available ? true : false}>
-                {item.total_available}
-              </Value>
+              <Label>tickets on {this.formatDate(item.presentation_local_date_time)} -></Label>
+              <Value available={item.total_available ? true : false}>{item.total_available}</Value>
             </PresentationBox>
           ))}
         </Block>
